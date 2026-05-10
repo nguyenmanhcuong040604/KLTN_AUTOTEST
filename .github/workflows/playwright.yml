@@ -75,6 +75,7 @@ jobs:
           PAYMENT_QR_BANK_BIN: 970422
           PAYMENT_QR_ACCOUNT_NO: 123456789
           PAYMENT_QR_ACCOUNT_NAME: SUNTOWER_TEST
+          TEST_SUPPORT_OTP_TOKEN: ci-test-support-token
         run: |
           chmod +x ./mvnw
           nohup ./mvnw spring-boot:run > app.log 2>&1 &
@@ -115,6 +116,7 @@ jobs:
           DB_JDBC_URL: jdbc:mysql://127.0.0.1:3306/estate
           DB_USERNAME: root
           DB_PASSWORD: 123456
+          TEST_SUPPORT_OTP_TOKEN: ci-test-support-token
         run: npm run test:regression
 
       - name: Upload HTML report
