@@ -1,0 +1,153 @@
+import { type Locator, type Page } from "@playwright/test";
+import { TableComponent } from "../components/TableComponent";
+import { CrudListPage } from "../core/CrudListPage";
+
+export class StaffInvoiceListPage extends CrudListPage {
+  protected readonly path = "/staff/invoices";
+  readonly addInvoiceButton: Locator;
+  readonly invoiceTableBody: Locator;
+  readonly addInvoiceModal: Locator;
+  readonly addInvoiceForm: Locator;
+  readonly emptyState: Locator;
+  private readonly table: TableComponent;
+
+  /**
+   * Initializes this page object.
+   */
+  constructor(page: Page) {
+    super(page);
+    this.addInvoiceButton = this.page.locator(".btn-add-invoice");
+    this.invoiceTableBody = this.page.locator("#invoiceTableBody");
+    this.addInvoiceModal = this.page.locator("#addInvoiceModal");
+    this.addInvoiceForm = this.page.locator("#addInvoiceForm");
+    this.emptyState = this.page.locator(".empty-state");
+    this.table = new TableComponent(page, "#invoiceTableBody");
+  }
+
+  async waitForLoaded(): Promise<void> {
+    await this.page.waitForURL(/\/staff\/invoices/);
+    await this.waitForVisible(this.page.locator('a.nav-link.active[href="/staff/invoices"]'));
+    await this.waitForVisible(this.firstVisible(this.page.locator("h1")));
+    await this.waitForVisible(this.invoiceTableBody);
+  }
+
+  rowByInvoiceId(invoiceId: number): Locator {
+    return this.firstVisible(this.page.locator("#invoiceTableBody tr").filter({ hasText: String(invoiceId) }));
+  }
+
+  visibleModal(): Locator {
+    return this.page.locator(".modal.show");
+  }
+
+  async visibleModalLooseText(): Promise<string> {
+    return this.locatorLooseText(this.visibleModal());
+  }
+
+  async waitForTableData(): Promise<void> {
+    await this.waitForVisible(this.invoiceTableBody);
+    await this.table.waitForDataOrEmpty();
+  }
+
+  async openAddInvoiceModal(): Promise<void> {
+    if (!(await this.addInvoiceModal.isVisible().catch(() => false))) {
+      await this.addInvoiceButton.click();
+    }
+    await this.waitForVisible(this.addInvoiceModal);
+  }
+
+  async selectAddCustomer(customerId: number): Promise<void> {
+    await this.addInvoiceForm.locator("#addCustomerSelect").selectOption(String(customerId));
+  }
+
+  async selectAddContract(contractId: number): Promise<void> {
+    await this.addInvoiceForm.locator("#addContractSelect").selectOption(String(contractId));
+  }
+
+  async fillAddInvoiceForm(input: {
+    month: number;
+    year: number;
+    dueDate: string;
+    electricityUsage: number;
+    waterUsage: number;
+  }): Promise<void> {
+    await this.addInvoiceForm.locator('[name="month"]').selectOption(String(input.month));
+    await this.addInvoiceForm.locator('[name="year"]').fill(String(input.year));
+    await this.addInvoiceForm.locator('[name="dueDate"]').fill(input.dueDate);
+    await this.addInvoiceForm.locator('[name="electricityUsage"]').fill(String(input.electricityUsage));
+    await this.addInvoiceForm.locator('[name="waterUsage"]').fill(String(input.waterUsage));
+  }
+
+  /**
+   * Chooses the add status option.
+   */
+  async chooseAddStatus(status: "PENDING" | "PAID" | "OVERDUE"): Promise<void> {
+    const statusMap = {
+      PENDING: "label[for='addStatusPending']",
+      PAID: "label[for='addStatusPaid']",
+      OVERDUE: "label[for='addStatusOverdue']"
+    } as const;
+    await this.addInvoiceModal.locator(statusMap[status]).click();
+  }
+
+  async submitAddInvoice(): Promise<void> {
+    await this.addInvoiceModal.locator('button[form="addInvoiceForm"]').click();
+  }
+
+  async openViewModal(invoiceId: number): Promise<void> {
+    await this.actionButton(this.rowByInvoiceId(invoiceId), "view").click();
+    await this.waitForVisible(this.visibleModal());
+  }
+
+  async openEditModal(invoiceId: number): Promise<void> {
+    await this.actionButton(this.rowByInvoiceId(invoiceId), "edit").click();
+    await this.waitForVisible(this.visibleModal());
+  }
+
+  async fillVisibleEditForm(input: {
+    dueDate: string;
+    electricityUsage: number;
+    waterUsage: number;
+    status: "PENDING" | "PAID" | "OVERDUE";
+  }): Promise<void> {
+    const modal = this.visibleModal();
+    await modal.locator('[name="dueDate"]').fill(input.dueDate);
+    await modal.locator('[name="electricityUsage"]').fill(String(input.electricityUsage));
+    await modal.locator('[name="waterUsage"]').fill(String(input.waterUsage));
+
+    const statusIdMap = {
+      PENDING: "statusPending",
+      PAID: "statusPaid",
+      OVERDUE: "statusOverdue"
+    } as const;
+    await this.firstVisible(modal.locator(`label[for^="${statusIdMap[input.status]}-"]`)).click();
+  }
+
+  /**
+   * Saves visible edit form changes.
+   */
+  async saveVisibleEditForm(): Promise<void> {
+    const modal = this.visibleModal();
+    await this.firstVisible(
+      modal
+        .locator(
+          ".modal-footer button.btn-primary, .modal-footer button:last-child, button[form^='editInvoiceForm'], button[type='submit'], button.btn-save, button.btn-primary"
+        )
+        .or(modal.getByRole("button", { name: /luu thay d?i|luu thay doi|save/i }))
+    ).click();
+  }
+
+  /**
+   * Deletes invoice through the UI.
+   */
+  async deleteInvoice(invoiceId: number): Promise<void> {
+    await this.actionButton(this.rowByInvoiceId(invoiceId), "delete").click();
+  }
+
+  async waitForSweetAlertContains(text: string | RegExp): Promise<void> {
+    await this.waitForSweetAlertContainsText(text);
+  }
+
+  async confirmSweetAlert(): Promise<void> {
+    await super.confirmSweetAlert();
+  }
+}

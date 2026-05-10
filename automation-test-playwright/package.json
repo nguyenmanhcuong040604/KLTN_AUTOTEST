@@ -1,0 +1,42 @@
+{
+  "name": "automation-test-playwright",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright + TypeScript automation testing framework for SunTower",
+  "scripts": {
+    "typecheck": "tsc -p . --noEmit",
+    "lint": "eslint .",
+    "format:check": "prettier --check \"**/*.{ts,js,mjs,json,md}\" --ignore-path .prettierignore",
+    "format": "prettier --write \"**/*.{ts,js,mjs,json,md}\" --ignore-path .prettierignore",
+    "quality:check": "npm run typecheck && npm run lint && npm run format:check && node scripts/quality-gate.js",
+    "test": "playwright test",
+    "test:e2e": "playwright test tests/e2e --project e2e",
+    "test:admin": "playwright test tests/e2e/admin --project e2e",
+    "test:auth": "playwright test tests/e2e/auth --project e2e",
+    "test:customer": "playwright test tests/e2e/customer --project e2e",
+    "test:payment": "playwright test tests/e2e/payment --project e2e",
+    "test:public": "playwright test tests/e2e/public --project e2e",
+    "test:staff": "playwright test tests/e2e/staff --project e2e",
+    "test:demo": "playwright test tests/e2e/auth tests/e2e/public --project e2e",
+    "test:smoke": "playwright test tests/e2e --project e2e --grep \"@smoke\"",
+    "test:critical": "playwright test tests/e2e --project e2e --grep \"@critical\"",
+    "test:regression": "playwright test tests/e2e --project e2e --grep \"@regression\"",
+    "test:list": "playwright test tests/e2e --project e2e --list",
+    "test:catalog": "node scripts/export-test-catalog.js",
+    "test:ci": "npm run quality:check && npm run test:regression",
+    "flakiness:report": "node scripts/flakiness-report.js",
+    "report": "playwright show-report .runtime/playwright-report"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.54.2",
+    "@types/node": "^24.0.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^10.3.0",
+    "eslint-plugin-playwright": "^2.10.2",
+    "mysql2": "^3.22.0",
+    "prettier": "^3.8.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.59.2"
+  }
+}

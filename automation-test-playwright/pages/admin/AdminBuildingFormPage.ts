@@ -1,0 +1,121 @@
+import { type Locator, type Page } from "@playwright/test";
+import { CrudFormPage } from "../core/CrudFormPage";
+
+export class AdminBuildingFormPage extends CrudFormPage {
+  protected readonly addPath = "/admin/building/add";
+  protected readonly editPath = "/admin/building/edit";
+  readonly form: Locator;
+
+  /**
+   * Initializes this page object.
+   */
+  constructor(page: Page) {
+    super(page);
+    this.form = this.page.locator("#buildingForm");
+  }
+
+  async waitForAddLoaded(): Promise<void> {
+    await this.page.waitForURL(/\/admin\/building\/add/);
+    await this.waitForVisible(this.form);
+  }
+
+  async waitForEditLoaded(buildingId: number): Promise<void> {
+    await this.waitForPageUrl(new RegExp(`/admin/building/edit/${buildingId}$`));
+    await this.waitForVisible(this.form);
+  }
+
+  /**
+   * Sets transaction type in the UI.
+   */
+  async setTransactionType(value: "FOR_RENT" | "FOR_SALE"): Promise<void> {
+    await this.page.locator(`#transactionTypeSelector .type-btn[data-val="${value}"]`).click();
+  }
+
+  async fillCommonFields(data: {
+    name?: string;
+    districtId?: string;
+    ward?: string;
+    street?: string;
+    numberOfFloor?: number;
+    numberOfBasement?: number;
+    floorArea?: number;
+    level?: string;
+    direction?: string;
+    taxCode?: string;
+    linkOfBuilding?: string;
+  }): Promise<void> {
+    if (data.name) await this.fillTextField("name", data.name);
+    if (data.districtId) await this.page.locator('[name="district"]').selectOption(data.districtId);
+    if (data.ward) await this.fillTextField("ward", data.ward);
+    if (data.street) await this.fillTextField("street", data.street);
+    if (typeof data.numberOfFloor === "number") await this.fillNumberField("numberOfFloor", data.numberOfFloor);
+    if (typeof data.numberOfBasement === "number")
+      await this.fillNumberField("numberOfBasement", data.numberOfBasement);
+    if (typeof data.floorArea === "number") await this.fillNumberField("floorArea", data.floorArea);
+    if (data.level) await this.selectOption("level", data.level);
+    if (data.direction) await this.selectOption("direction", data.direction);
+    if (data.taxCode) await this.fillTextField("taxCode", data.taxCode);
+    if (data.linkOfBuilding) await this.fillTextField("linkOfBuilding", data.linkOfBuilding);
+  }
+
+  async fillRentFields(data: {
+    rentPrice?: number;
+    deposit?: number;
+    serviceFee?: number;
+    carFee?: number;
+    motorbikeFee?: number;
+    waterFee?: number;
+    electricityFee?: number;
+    rentAreaValues?: string;
+  }): Promise<void> {
+    if (typeof data.rentPrice === "number") await this.fillNumberField("rentPrice", data.rentPrice);
+    if (typeof data.deposit === "number") await this.fillNumberField("deposit", data.deposit);
+    if (typeof data.serviceFee === "number") await this.fillNumberField("serviceFee", data.serviceFee);
+    if (typeof data.carFee === "number") await this.fillNumberField("carFee", data.carFee);
+    if (typeof data.motorbikeFee === "number") await this.fillNumberField("motorbikeFee", data.motorbikeFee);
+    if (typeof data.waterFee === "number") await this.fillNumberField("waterFee", data.waterFee);
+    if (typeof data.electricityFee === "number") await this.fillNumberField("electricityFee", data.electricityFee);
+    if (data.rentAreaValues) {
+      const tagInput = this.page.locator("#tagRealInput");
+      const removeButtons = this.page.locator(
+        ".area-tag button, .tag .remove-tag, .tag .tag-remove, .rent-area-tag .btn-close"
+      );
+      while ((await removeButtons.count()) > 0) {
+        await removeButtons.first().click();
+      }
+      await this.waitForVisible(tagInput);
+      await tagInput.click();
+      await tagInput.press("Control+A");
+      await tagInput.press("Backspace");
+      await tagInput.type(data.rentAreaValues);
+      await tagInput.press("Enter");
+      await this.waitForLocatorValue(this.page.locator("#rentAreaValuesInput"), data.rentAreaValues);
+    }
+  }
+
+  async fillSalePrice(salePrice: number): Promise<void> {
+    await this.fillNumberField("salePrice", salePrice);
+  }
+
+  /**
+   * Sets coordinates in the UI.
+   */
+  async setCoordinates(latitude: number, longitude: number): Promise<void> {
+    await this.setInputValue(this.page.locator('[name="latitude"], #latInput').first(), String(latitude));
+    await this.setInputValue(this.page.locator('[name="longitude"], #lngInput').first(), String(longitude));
+  }
+
+  async selectStaffIds(staffIds: number[]): Promise<void> {
+    for (const staffId of staffIds) {
+      await this.page.locator(`input[name="staffIds"][value="${staffId}"]`).check();
+    }
+  }
+
+  async waitForLockBanner(): Promise<void> {
+    await this.waitForVisible(this.page.locator("main .bi-lock-fill").first());
+  }
+
+  async waitForSweetAlertContains(text: string | RegExp): Promise<void> {
+    await this.waitForSweetAlertContainsText(text);
+  }
+}

@@ -1,0 +1,59 @@
+import { type Locator, type Page } from "@playwright/test";
+import { BootstrapModalComponent } from "./BootstrapModalComponent";
+
+export type ProfileModalKind = "username" | "phone" | "password";
+
+/**
+ * Manages profile edit modals (username, phone, password) and their OTP flows.
+ */
+export class ProfileModalComponent {
+  private readonly bootstrapModal: BootstrapModalComponent;
+
+  /**
+   * Creates a profile modal component backed by a BootstrapModalComponent.
+   */
+  constructor(private readonly page: Page) {
+    this.bootstrapModal = new BootstrapModalComponent(page);
+  }
+
+  modal(kind: ProfileModalKind): Locator {
+    const idByKind: Record<ProfileModalKind, string> = {
+      username: "editUsernameModal",
+      phone: "editPhoneModal",
+      password: "changePasswordModal"
+    };
+    return this.bootstrapModal.byId(idByKind[kind]);
+  }
+
+  action(kind: ProfileModalKind): Locator {
+    const targetByKind: Record<ProfileModalKind, string> = {
+      username: "#editUsernameModal",
+      phone: "#editPhoneModal",
+      password: "#changePasswordModal"
+    };
+    return this.page.locator(`[data-bs-target="${targetByKind[kind]}"]`).filter({ visible: true }).first();
+  }
+
+  /**
+   * Opens the page.
+   */
+  async open(kind: ProfileModalKind): Promise<Locator> {
+    const modal = this.modal(kind);
+    if (!(await modal.isVisible().catch(() => false))) {
+      await this.action(kind).click();
+    }
+    await this.bootstrapModal.waitForVisible(modal);
+    return modal;
+  }
+
+  /**
+   * Sends otp from the UI.
+   */
+  async sendOtp(kind: ProfileModalKind): Promise<void> {
+    await this.modal(kind)
+      .locator(".btn-send-otp, [data-action='send-otp'], button:has-text('OTP'), button:has-text('Gửi mã')")
+      .filter({ visible: true })
+      .first()
+      .click();
+  }
+}

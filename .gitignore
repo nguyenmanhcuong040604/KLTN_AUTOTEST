@@ -1,0 +1,41 @@
+# Environment variables and local runtime config
+.env
+**/.env
+!.env.example
+!**/.env.example
+
+# Java / Maven build output
+target/
+**/target/
+build/
+**/build/
+
+# Node / Playwright dependencies and reports
+node_modules/
+**/node_modules/
+.runtime/
+**/.runtime/
+artifacts/
+**/artifacts/
+playwright-report/
+**/playwright-report/
+reports/
+**/reports/
+test-results/
+**/test-results/
+blob-report/
+**/blob-report/
+
+# IDE/editor files
+.idea/
+.vscode/
+*.iws
+*.iml
+*.ipr
+.classpath
+.project
+.settings/
+
+# Logs and local uploads
+*.log
+sunTower-main/uploads/

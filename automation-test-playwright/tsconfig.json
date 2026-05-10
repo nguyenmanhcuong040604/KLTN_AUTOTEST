@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "Node16",
+    "moduleResolution": "node16",
+    "lib": ["ES2022", "DOM"],
+    "types": ["node", "@playwright/test"],
+    "paths": {
+      "@helpers-runtime/*": ["./helpers/runtime/*"],
+      "@pages/*": ["./pages/*"],
+      "@fixtures/*": ["./fixtures/*"],
+      "@test-data/*": ["./fixtures/test-data/*"],
+      "@test-data-scenarios/*": ["./fixtures/test-data/scenarios/*"],
+      "@test-data-factories/*": ["./fixtures/test-data/factories/*"],
+      "@helpers-test-state/*": ["./helpers/test-state/*"],
+      "@helpers-observability/*": ["./helpers/observability/*"],
+      "@helpers-accounts/*": ["./helpers/accounts/*"],
+      "@helpers-auth/*": ["./helpers/auth/*"],
+      "@helpers-browser/*": ["./helpers/browser/*"],
+      "@helpers-text/*": ["./helpers/text/*"],
+      "@helpers-validation/*": ["./helpers/validation/*"]
+    },
+    "esModuleInterop": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true
+  },
+  "include": ["playwright.config.ts", "fixtures/**/*.ts", "pages/**/*.ts", "helpers/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["node_modules", ".runtime"]
+}
