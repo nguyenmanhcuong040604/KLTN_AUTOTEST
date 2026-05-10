@@ -1,0 +1,6 @@
+target/
+.env
+.runtime/
+allure-results/
+allure-report/
+.mvn/wrapper/dists/

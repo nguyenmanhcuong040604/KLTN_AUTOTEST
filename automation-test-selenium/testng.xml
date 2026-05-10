@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="SunTower Selenium E2E" parallel="methods" thread-count="1">
+  <listeners>
+    <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    <listener class-name="org.suntower.fixtures.listeners.TestLifecycleListener"/>
+  </listeners>
+  <test name="e2e">
+    <packages>
+      <package name="org.suntower.tests.e2e.*"/>
+    </packages>
+  </test>
+</suite>

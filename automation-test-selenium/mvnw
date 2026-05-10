@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+set -eu
+
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+DIST_DIR="$SCRIPT_DIR/.mvn/wrapper/dists"
+MAVEN_VERSION="3.9.11"
+MAVEN_HOME="$DIST_DIR/apache-maven-$MAVEN_VERSION"
+MAVEN_CMD="$MAVEN_HOME/bin/mvn"
+MAVEN_URL="https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$MAVEN_VERSION/apache-maven-$MAVEN_VERSION-bin.zip"
+
+if [ ! -x "$MAVEN_CMD" ]; then
+  echo "Apache Maven $MAVEN_VERSION was not found locally."
+  echo "Downloading Maven distribution..."
+  mkdir -p "$DIST_DIR"
+  TMP_DIR="$DIST_DIR/tmp"
+  ZIP_FILE="$DIST_DIR/apache-maven-$MAVEN_VERSION-bin.zip"
+  rm -rf "$TMP_DIR"
+  mkdir -p "$TMP_DIR"
+
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$MAVEN_URL" -o "$ZIP_FILE"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -q "$MAVEN_URL" -O "$ZIP_FILE"
+  else
+    echo "Neither curl nor wget is available to download Maven." >&2
+    exit 1
+  fi
+
+  unzip -q "$ZIP_FILE" -d "$TMP_DIR"
+  rm -rf "$MAVEN_HOME"
+  mv "$TMP_DIR/apache-maven-$MAVEN_VERSION" "$MAVEN_HOME"
+  rm -rf "$TMP_DIR" "$ZIP_FILE"
+fi
+
+exec "$MAVEN_CMD" "$@"
