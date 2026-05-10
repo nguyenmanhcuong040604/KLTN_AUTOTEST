@@ -21,8 +21,7 @@ Mục tiêu của repository:
 |-- .github/                                # Cấu hình GitHub Actions CI/CD
 |-- sunTower-main/                          # Source code Backend ứng dụng SunTower
 |-- automation-test-playwright/             # Dự án kiểm thử tự động với Playwright
-|-- automation-test-selenium-plan.md        # Tài liệu kế hoạch/thiết kế kiểm thử Selenium
-|-- (Dự án test Selenium - sắp tới)         # Thư mục mã nguồn framework Selenium
+|-- automation-test-selenium/               # Thư mục mã nguồn framework Selenium
 `-- README.md                               # File hướng dẫn chung (file này)
 ```
 
