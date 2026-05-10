@@ -322,7 +322,7 @@ INSERT INTO building
 (name, district_id, ward, street, number_of_floor, number_of_basement, floor_area, direction, level, property_type, transaction_type, tax_code, rent_price, sale_price, service_fee, car_fee, motorbike_fee, water_fee, electricity_fee, deposit, link_of_building, image, latitude, longitude, created_date, modified_date) VALUES
 ('The Ascent Thảo Điền', 30, 'P. Thảo Điền'       , '58 Quốc Hương' , 30, 3, 75, 'NAM', 'A'     , 'APARTMENT', 'FOR_RENT', '0313652907', 25000000, NULL, 800000, 1200000, 60000,100000,35000,  50000000, 'https://theascent.vn'         , 'apt-theascent.jpg' , 10.807198264176137, 106.73141565928037, '2021-07-01', '2024-12-10'),
 ('Masteri Waterfront'  , 13, 'P. Đa Tốn'          , 'Hải Đăng 2'    , 38, 3, 68, 'TAY', 'B_PLUS', 'APARTMENT', 'FOR_RENT', '0108751349', 18000000, NULL, 600000, 900000 , 50000, 90000,30000,  36000000, 'https://masteri-waterfront.vn', 'apt-masteri-wf.jpg', 20.994602250137632, 105.94490104128745, '2022-09-05', '2025-02-28'),
-('Gold Season'         , 7 , 'P. Thanh Xuân Trung', '47 Nguyễn Tuân', 37, 3, 75, 'NAM', 'A'     , 'APARTMENT', 'FOR_RENT', '0100233488', 18000000, NULL, 800000, 1200000, 60000,100000,35000,  36000000, 'https://goldseason.vn'        , 'apt-goldseason.jpg', 20.995411298376332, 105.80463299602404, '2021-07-01', '2024-12-10');
+('Gold Season'         , 7 , 'P. Thanh Xuân Trung', '47 Nguyễn Tuân', 37, 3, 75, 'NAM', 'A'     , 'APARTMENT', 'FOR_RENT', '0100233488', 18000000, NULL, 800000, 1200000, 60000,100000,35000,  36000000, 'https://goldseason.vn'        , NULL, 20.995411298376332, 105.80463299602404, '2021-07-01', '2024-12-10');
 
 -- -------------------------------------------------------
 -- APARTMENT FOR_SALE: B14-B15 — HCM, Đà Nẵng

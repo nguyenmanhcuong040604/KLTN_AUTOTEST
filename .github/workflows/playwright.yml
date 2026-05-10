@@ -116,6 +116,7 @@ jobs:
           DB_JDBC_URL: jdbc:mysql://127.0.0.1:3306/estate
           DB_USERNAME: root
           DB_PASSWORD: 123456
+          CI_WORKERS: 1
           TEST_SUPPORT_OTP_TOKEN: ci-test-support-token
         run: npm run test:regression
 

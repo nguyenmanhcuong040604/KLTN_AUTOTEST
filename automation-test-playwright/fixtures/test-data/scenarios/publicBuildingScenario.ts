@@ -26,6 +26,7 @@ const PUBLIC_VISIBILITY_WHERE = `
     OR EXISTS (SELECT 1 FROM contract c WHERE c.building_id = b.id AND c.status = 'EXPIRED')
   ))
 )
+AND b.name NOT LIKE 'PW Building%'
 `;
 
 const BASE_BUILDING_SELECT = `

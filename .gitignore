@@ -39,3 +39,4 @@ blob-report/
 # Logs and local uploads
 *.log
 sunTower-main/uploads/
+.tmp-actions/
