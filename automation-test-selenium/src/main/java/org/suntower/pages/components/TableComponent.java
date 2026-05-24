@@ -34,9 +34,28 @@ public class TableComponent extends BasePage {
 
   public WebElement rowByText(String text) {
     waitForCondition(
-        () -> rows().stream().anyMatch(row -> row.isDisplayed() && row.getText().contains(text)),
+        () ->
+            rows().stream()
+                .anyMatch(
+                    row -> {
+                      try {
+                        return row.isDisplayed() && row.getText().contains(text);
+                      } catch (RuntimeException ignored) {
+                        return false;
+                      }
+                    }),
         "No visible table row contained text: " + text);
-    return rows().stream().filter(row -> row.isDisplayed() && row.getText().contains(text)).findFirst().orElseThrow();
+    return rows().stream()
+        .filter(
+            row -> {
+              try {
+                return row.isDisplayed() && row.getText().contains(text);
+              } catch (RuntimeException ignored) {
+                return false;
+              }
+            })
+        .findFirst()
+        .orElseThrow();
   }
 
   public void waitForDataOrEmpty() {

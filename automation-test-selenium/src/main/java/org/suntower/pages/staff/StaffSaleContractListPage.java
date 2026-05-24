@@ -1,0 +1,84 @@
+package org.suntower.pages.staff;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.suntower.pages.components.TableComponent;
+import org.suntower.pages.core.CrudListPage;
+
+public class StaffSaleContractListPage extends CrudListPage {
+  private final By filterForm = css("#filterForm");
+  private final By tableBody = css("#saleContractTableBody");
+  private final By detailModal = css(".modal.show");
+  private final TableComponent table;
+
+  public StaffSaleContractListPage(WebDriver driver) {
+    super(driver);
+    this.path = "/staff/sale-contracts";
+    this.table = new TableComponent(driver, "#saleContractTableBody");
+  }
+
+  public void waitForLoaded() {
+    waitForUrlContains("/staff/sale-contracts");
+    waitForVisible(filterForm);
+    waitForVisible(tableBody);
+  }
+
+  public void waitForTableData() {
+    table.waitForDataOrEmpty();
+  }
+
+  public WebElement rowByBuildingName(String buildingName) {
+    return table.rowByText(buildingName);
+  }
+
+  public void waitForRowVisible(String buildingName) {
+    rowByBuildingName(buildingName);
+  }
+
+  public void filterByCustomerId(long customerId) {
+    setSelectValue("customerId", String.valueOf(customerId));
+  }
+
+  public void filterByBuildingId(long buildingId) {
+    setSelectValue("buildingId", String.valueOf(buildingId));
+  }
+
+  public void submitFilters() {
+    wait.until(ExpectedConditions.presenceOfElementLocated(filterForm));
+    ((JavascriptExecutor) driver).executeScript("document.querySelector('#filterForm').requestSubmit();");
+    waitForTableData();
+  }
+
+  public void openDetail(String buildingName) {
+    WebElement row = rowByBuildingName(buildingName);
+    click(row.findElement(By.cssSelector(".btn-view")));
+  }
+
+  public void waitForDetailModalContains(String text) {
+    waitForVisible(detailModal);
+    waitForText(detailModal, text);
+  }
+
+  public void closeDetailModal() {
+    click(firstVisible(css(".modal.show .btn-close, .modal.show .modal-footer button")));
+    waitForHidden(detailModal);
+  }
+
+  private void setSelectValue(String fieldName, String value) {
+    wait.until(ExpectedConditions.presenceOfElementLocated(By.name(fieldName)));
+    ((JavascriptExecutor) driver)
+        .executeScript(
+            "const el = document.querySelector('[name=\"' + arguments[0] + '\"]');"
+                + "if (!Array.from(el.options).some(option => option.value === arguments[1])) {"
+                + "  el.add(new Option(arguments[1], arguments[1]));"
+                + "}"
+                + "el.value = arguments[1];"
+                + "el.dispatchEvent(new Event('input', { bubbles: true }));"
+                + "el.dispatchEvent(new Event('change', { bubbles: true }));",
+            fieldName,
+            value);
+  }
+}

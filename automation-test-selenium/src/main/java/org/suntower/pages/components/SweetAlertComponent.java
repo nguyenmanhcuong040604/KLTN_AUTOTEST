@@ -23,7 +23,7 @@ public class SweetAlertComponent extends BasePage {
     waitForVisible();
     waitForCondition(
         () -> normalizeLooseText(text(popup)).matches("(?is).*(" + regex + ").*"),
-        "SweetAlert did not contain expected text: " + regex);
+        "SweetAlert did not contain expected text: " + regex + ". Actual: " + text(popup));
   }
 
   public void confirm() {

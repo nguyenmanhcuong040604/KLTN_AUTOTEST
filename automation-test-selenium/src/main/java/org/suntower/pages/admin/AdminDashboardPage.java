@@ -1,7 +1,9 @@
 package org.suntower.pages.admin;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.suntower.pages.core.AdminShellPage;
 
 public class AdminDashboardPage extends AdminShellPage {
@@ -30,19 +32,23 @@ public class AdminDashboardPage extends AdminShellPage {
   }
 
   public void openBuildingsFromStatCard() {
-    click(statCardByStatId("totalBuildingsStat"));
+    clickStatCard("totalBuildingsStat");
+    waitForUrlContains("/admin/building/list");
   }
 
   public void openCustomersFromStatCard() {
-    click(statCardByStatId("totalCustomersStat"));
+    clickStatCard("totalCustomersStat");
+    waitForUrlContains("/admin/customer/list");
   }
 
   public void openStaffsFromStatCard() {
-    click(statCardByStatId("totalStaffsStat"));
+    clickStatCard("totalStaffsStat");
+    waitForUrlContains("/admin/staff/list");
   }
 
   public void openContractsFromStatCard() {
-    click(statCardByStatId("totalContractsStat"));
+    clickStatCard("totalContractsStat");
+    waitForUrlContains("/admin/contract/list");
   }
 
   public void waitForRecentBuildingVisible(String buildingName) {
@@ -60,5 +66,11 @@ public class AdminDashboardPage extends AdminShellPage {
 
   private By statCardByStatId(String statId) {
     return By.xpath("//*[@id='" + statId + "']/ancestor::div[contains(@class,'stat-card')]");
+  }
+
+  private void clickStatCard(String statId) {
+    WebElement statCard = visible(statCardByStatId(statId));
+    scrollIntoView(statCard);
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", statCard);
   }
 }

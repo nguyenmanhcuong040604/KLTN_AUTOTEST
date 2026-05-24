@@ -6,7 +6,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -104,7 +106,16 @@ public class BasePage {
   }
 
   protected List<WebElement> visibles(By locator) {
-    return driver.findElements(locator).stream().filter(WebElement::isDisplayed).toList();
+    return driver.findElements(locator).stream()
+        .filter(
+            element -> {
+              try {
+                return element.isDisplayed();
+              } catch (StaleElementReferenceException ignored) {
+                return false;
+              }
+            })
+        .toList();
   }
 
   protected WebElement firstVisible(By locator) {
@@ -113,11 +124,17 @@ public class BasePage {
   }
 
   protected void click(By locator) {
-    wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+    click(wait.until(ExpectedConditions.elementToBeClickable(locator)));
   }
 
   protected void click(WebElement element) {
-    wait.until(ExpectedConditions.elementToBeClickable(element)).click();
+    WebElement clickable = wait.until(ExpectedConditions.elementToBeClickable(element));
+    scrollIntoView(clickable);
+    try {
+      clickable.click();
+    } catch (ElementClickInterceptedException error) {
+      ((JavascriptExecutor) driver).executeScript("arguments[0].click();", clickable);
+    }
   }
 
   protected void fill(By locator, String value) {
@@ -137,11 +154,15 @@ public class BasePage {
   }
 
   protected void setInputValue(By locator, String value) {
-    WebElement element = visible(locator);
+    WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
     if (element.isEnabled()) {
-      element.clear();
-      element.sendKeys(value);
-      return;
+      try {
+        element.clear();
+        element.sendKeys(value);
+        return;
+      } catch (RuntimeException ignored) {
+        // Hidden or script-managed fields are updated below through DOM events.
+      }
     }
     ((JavascriptExecutor) driver)
         .executeScript(
@@ -233,6 +254,10 @@ public class BasePage {
                     || "interactive".equals(((JavascriptExecutor) driver).executeScript("return document.readyState")));
   }
 
+  protected void scrollIntoView(WebElement element) {
+    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", element);
+  }
+
   protected String normalizeLooseText(String value) {
     if (value == null) {
       return "";
@@ -251,7 +276,7 @@ public class BasePage {
   protected void check(By locator) {
     WebElement element = visible(locator);
     if (!element.isSelected()) {
-      element.click();
+      click(element);
     }
   }
 

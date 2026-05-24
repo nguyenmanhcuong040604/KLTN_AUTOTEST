@@ -1,6 +1,7 @@
 package org.suntower.fixtures.auth;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.suntower.core.AppConfig;
@@ -15,9 +16,26 @@ public final class AuthSessionHelper {
     loginPage.login(username, password);
   }
 
+  public static void loginUiAndOpen(WebDriver driver, String username, String password, String targetPath) {
+    loginUi(driver, username, password);
+    WebDriverWait wait = new WebDriverWait(driver, AppConfig.get().navigationTimeout());
+    wait.until(ExpectedConditions.not(ExpectedConditions.urlContains("/login")));
+    driver.navigate().to(AppConfig.get().baseUrl() + targetPath);
+    try {
+      new WebDriverWait(driver, java.time.Duration.ofSeconds(5)).until(ExpectedConditions.urlContains(targetPath));
+    } catch (TimeoutException ignored) {
+      driver.navigate().to(AppConfig.get().baseUrl() + targetPath);
+    }
+    wait.until(ExpectedConditions.urlContains(targetPath));
+  }
+
   public static void loginAsRoleUiStrict(WebDriver driver, String role) {
     String username = TestAccountResolver.rememberedOrDefault(role);
-    loginUi(driver, username, AppConfig.get().defaultPassword());
+    LoginPage loginPage = new LoginPage(driver);
+    loginPage.open();
+    if (!driver.getCurrentUrl().contains("/" + role + "/") && !driver.getCurrentUrl().contains("/login-success")) {
+      loginPage.login(username, AppConfig.get().defaultPassword());
+    }
     TestAccountResolver.remember(role, username);
     WebDriverWait wait = new WebDriverWait(driver, AppConfig.get().navigationTimeout());
     wait.until(ExpectedConditions.or(

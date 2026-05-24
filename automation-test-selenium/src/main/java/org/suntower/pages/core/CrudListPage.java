@@ -81,7 +81,7 @@ public class CrudListPage extends BasePage {
 
   public void clickRowLink(String rowText, String hrefPart) {
     WebElement row = rowByText(rowText);
-    row.findElement(By.cssSelector("a[href*='" + hrefPart + "']")).click();
+    click(row.findElement(By.cssSelector("a[href*='" + hrefPart + "']")));
   }
 
   public void clickFirstRowLink(String hrefPart) {
@@ -97,7 +97,7 @@ public class CrudListPage extends BasePage {
   }
 
   public void deleteRow(String rowText) {
-    rowByText(rowText).findElement(actionButton("delete")).click();
+    click(rowByText(rowText).findElement(actionButton("delete")));
   }
 
   public void waitForRowVisible(String text) {

@@ -14,6 +14,9 @@ public final class TextNormalizeHelper {
   }
 
   public static String stripDiacritics(String value) {
-    return Normalizer.normalize(value, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+    return Normalizer.normalize(value, Normalizer.Form.NFD)
+        .replace("đ", "d")
+        .replace("Đ", "D")
+        .replaceAll("\\p{M}", "");
   }
 }

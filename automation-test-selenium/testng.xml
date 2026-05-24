@@ -6,8 +6,37 @@
     <listener class-name="org.suntower.fixtures.listeners.TestLifecycleListener"/>
   </listeners>
   <test name="e2e">
-    <packages>
-      <package name="org.suntower.tests.e2e.*"/>
-    </packages>
+    <classes>
+      <class name="org.suntower.tests.e2e.admin.AdminBuildingAdditionalInformationTest"/>
+      <class name="org.suntower.tests.e2e.admin.AdminBuildingManagementTest"/>
+      <class name="org.suntower.tests.e2e.admin.AdminContractManagementTest"/>
+      <class name="org.suntower.tests.e2e.admin.AdminCustomerManagementTest"/>
+      <class name="org.suntower.tests.e2e.admin.AdminDashboardTest"/>
+      <class name="org.suntower.tests.e2e.admin.AdminInvoiceManagementTest"/>
+      <class name="org.suntower.tests.e2e.admin.AdminProfileTest"/>
+      <class name="org.suntower.tests.e2e.admin.AdminPropertyRequestManagementTest"/>
+      <class name="org.suntower.tests.e2e.admin.AdminReportTest"/>
+      <class name="org.suntower.tests.e2e.admin.AdminSaleContractManagementTest"/>
+      <class name="org.suntower.tests.e2e.admin.AdminStaffManagementTest"/>
+      <class name="org.suntower.tests.e2e.auth.AuthLoginTest"/>
+      <class name="org.suntower.tests.e2e.auth.AuthPasswordResetTest"/>
+      <class name="org.suntower.tests.e2e.auth.AuthRegistrationTest"/>
+      <class name="org.suntower.tests.e2e.customer.CustomerBuildingListTest"/>
+      <class name="org.suntower.tests.e2e.customer.CustomerContractListTest"/>
+      <class name="org.suntower.tests.e2e.customer.CustomerHomeTest"/>
+      <class name="org.suntower.tests.e2e.customer.CustomerProfileTest"/>
+      <class name="org.suntower.tests.e2e.customer.CustomerPropertyRequestTest"/>
+      <class name="org.suntower.tests.e2e.customer.CustomerServiceTest"/>
+      <class name="org.suntower.tests.e2e.customer.CustomerTransactionHistoryTest"/>
+      <class name="org.suntower.tests.e2e.payment.CustomerInvoicePaymentTest"/>
+      <class name="org.suntower.tests.e2e.publicsite.PublicBuildingBrowsingTest"/>
+      <class name="org.suntower.tests.e2e.staff.StaffBuildingListTest"/>
+      <class name="org.suntower.tests.e2e.staff.StaffContractListTest"/>
+      <class name="org.suntower.tests.e2e.staff.StaffCustomerListTest"/>
+      <class name="org.suntower.tests.e2e.staff.StaffDashboardTest"/>
+      <class name="org.suntower.tests.e2e.staff.StaffInvoiceListTest"/>
+      <class name="org.suntower.tests.e2e.staff.StaffProfileTest"/>
+      <class name="org.suntower.tests.e2e.staff.StaffSaleContractListTest"/>
+    </classes>
   </test>
 </suite>

@@ -101,7 +101,9 @@ jobs:
           CI_WORKERS: 1
           HEADLESS: "true"
           TEST_SUPPORT_OTP_TOKEN: ci-test-support-token
-        run: mvn test -Dgroups=smoke
+        run: |
+          chmod +x ./mvnw
+          ./mvnw test -Dgroups=smoke
 
       - name: Upload Selenium artifacts
         if: always()

@@ -46,7 +46,7 @@ public final class AppConfig {
     this.adminUsernames = candidates("ADMIN_USERNAMES", "ADMIN_USERNAME", "admin123");
     this.staffUsernames = candidates("STAFF_USERNAMES", "STAFF_USERNAME", "tmq0102");
     this.customerUsernames = candidates("CUSTOMER_USERNAMES", "CUSTOMER_USERNAME", "abcVietNam");
-    this.testSupportOtpToken = value("TEST_SUPPORT_OTP_TOKEN", "local-test-support-token");
+    this.testSupportOtpToken = value("TEST_SUPPORT_OTP_TOKEN", "test-otp-token");
     this.dbJdbcUrl = value("DB_JDBC_URL", value("SPRING_DATASOURCE_URL", "jdbc:mysql://localhost:3306/estate"));
     this.dbUsername = value("DB_USERNAME", value("SPRING_DATASOURCE_USERNAME", "root"));
     this.dbPassword = value("DB_PASSWORD", value("SPRING_DATASOURCE_PASSWORD", "123456"));

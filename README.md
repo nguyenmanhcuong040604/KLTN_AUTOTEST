@@ -1,54 +1,87 @@
-# Khoá Luận Tốt Nghiệp - Hệ Thống SunTower & Kiểm Thử Tự Động
+# SunTower Graduation Project
 
-Repository này phục vụ khoá luận tốt nghiệp, bao gồm mã nguồn ứng dụng web quản lý bất động sản SunTower và các framework kiểm thử tự động (Playwright, Selenium).
+Repository nay chua source backend SunTower va hai framework kiem thu tu dong UI E2E bang Playwright va Selenium. Muc tieu la phuc vu khoa luan tot nghiep, dong thoi tao co so so sanh hai cong cu automation test tren cung mot ung dung, cung du lieu va cung catalog test case.
 
-## 1. Tổng Quan
+## Thanh Phan Chinh
 
-Dự án được chia thành các thành phần chính:
-- **Source Code Backend (Web App)**: Mã nguồn của hệ thống SunTower (Java Spring Boot, Thymeleaf, MySQL).
-- **Dự Án Test Playwright**: Framework kiểm thử tự động API sử dụng Playwright + TypeScript.
-- **Dự Án Test Selenium**: Framework kiểm thử tự động sử dụng Selenium (đang được phát triển/tích hợp).
+- `.github/`: GitHub Actions workflow cho Playwright va Selenium.
+- `sunTower-main/`: ung dung web SunTower bang Java Spring Boot, Thymeleaf va MySQL.
+- `automation-test-playwright/`: framework UI E2E bang Playwright + TypeScript.
+- `automation-test-selenium/`: framework UI E2E bang Selenium WebDriver + Java + TestNG.
 
-Mục tiêu của repository:
-- Quản lý tập trung toàn bộ mã nguồn hệ thống và code kiểm thử.
-- Hỗ trợ chạy ứng dụng local dễ dàng.
-- Tích hợp kiểm thử tự động vào CI/CD (GitHub Actions).
+## Cai Dat Tong Quan
 
-## 2. Cấu Trúc Repository
+Can cai dat:
 
-```text
-.
-|-- .github/                                # Cấu hình GitHub Actions CI/CD
-|-- sunTower-main/                          # Source code Backend ứng dụng SunTower
-|-- automation-test-playwright/             # Dự án kiểm thử tự động với Playwright
-|-- automation-test-selenium/               # Thư mục mã nguồn framework Selenium
-`-- README.md                               # File hướng dẫn chung (file này)
+- Java 21
+- Node.js 24 cho Playwright
+- MySQL 8.0
+- Chrome/Chromium cho UI test
+
+Khoi tao database local bang file:
+
+```powershell
+mysql -uroot -p < sunTower-main/estate_db_generator/sql_estate.sql
 ```
 
-## 3. Chi Tiết Các Thành Phần
+Moi du an con co file `.env.example`; sao chep thanh `.env` va cap nhat gia tri local khi can.
 
-### 3.1. Source Code Backend (`sunTower-main`)
-Ứng dụng Spring Boot cốt lõi của hệ thống SunTower. Chứa các API, logic nghiệp vụ quản lý bất động sản, controller, service, repository và giao diện Thymeleaf.
-- **Công nghệ**: Java 21, Spring Boot, Spring Data JPA, MySQL.
-- **Cách chạy**: Xem hướng dẫn chi tiết tại `sunTower-main/README.md`.
+## Cach Dung Nhanh
 
-### 3.2. Dự Án Test Playwright (`automation-test-playwright`)
-Bộ framework kiểm thử tự động được xây dựng chuyên biệt bằng Playwright để kiểm thử giao diện E2E và API.
-- **Công nghệ**: Playwright, TypeScript, Node.js.
-- **Tính năng**: Page Object Model, tự động tạo báo cáo HTML, chụp ảnh/quay video khi test thất bại.
-- **Cách chạy**: Xem hướng dẫn tại `automation-test-playwright/README.md`.
+Chay backend:
 
-### 3.3. Dự Án Test Selenium
-Thành phần kiểm thử tự động sử dụng trình duyệt điều khiển qua Selenium. Phục vụ việc đánh giá, so sánh hiệu năng và độ ổn định so với Playwright trong phạm vi khoá luận.
-- **Tài liệu tham khảo**: Xem `automation-test-selenium-plan.md`.
+```powershell
+cd sunTower-main
+$env:SPRING_PROFILES_ACTIVE="mysql,local-nooauth"
+.\mvnw.cmd spring-boot:run
+```
 
-## 4. Tài Khoản Test Mặc Định
+Chay Playwright:
 
-Sử dụng với database local đã seed dữ liệu:
-- **Admin**: `admin123` / `12345678`
-- **Nhân viên (Staff)**: `tmq0102` / `12345678`
-- **Khách hàng (Customer)**: `abcVietNam` / `12345678`
+```powershell
+cd automation-test-playwright
+npm install
+npx playwright install chromium
+npm run test:regression
+```
 
-## 5. Tài Liệu Chi Tiết Hơn
+Chay Selenium:
 
-Vui lòng tham khảo các file `README.md` nằm ở bên trong từng thư mục dự án con để biết thêm các lệnh cài đặt, chạy ứng dụng, và chạy test cụ thể.
+```powershell
+cd automation-test-selenium
+.\mvnw.cmd test
+```
+
+Tai khoan seed mac dinh:
+
+- Admin: `admin123` / `12345678`
+- Staff: `tmq0102` / `12345678`
+- Customer: `abcVietNam` / `12345678`
+
+## CI/CD
+
+GitHub Actions nam trong `.github/workflows`:
+
+- `playwright.yml`: start MySQL, import database, start backend, chay Playwright regression.
+- `selenium.yml`: start MySQL, import database, start backend, chay Selenium smoke.
+
+## Dong Gop
+
+Thay doi duoc chap nhan khi:
+
+- Khong commit `.env`, `node_modules`, `target`, report hoac log runtime.
+- Backend compile/test pass neu sua source BE.
+- Playwright `npm run typecheck` pass neu sua framework Playwright.
+- Selenium `.\mvnw.cmd test -DskipTests` pass neu sua framework Selenium.
+- Test case E2E moi can co Test ID ro rang va cleanup du lieu tao ra.
+
+## Loi Thuong Gap
+
+- Backend khong start: kiem tra MySQL dang chay, database `estate` da import va `.env` dung profile.
+- UI test khong login duoc: kiem tra `BASE_URL`, tai khoan seed va `DEFAULT_PASSWORD`.
+- Selenium bi loi Chrome trong sandbox: chay ngoai sandbox/CI runner that, hoac bat `HEADLESS=true`.
+- Playwright khong tim Chromium: chay `npx playwright install chromium`.
+
+## Ho Tro
+
+Lien he nhom phat trien SunTower hoac tao issue/pull request trong repository de bao loi va de xuat cai tien.
