@@ -72,7 +72,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Long getTotalUnpaidInvoicesByCustomer(Long customerId) {
-        return invoiceRepository.countByCustomerIdAndStatus(customerId, "PENDING");
+        return invoiceRepository.countByCustomerIdAndStatus(customerId, "OVERDUE");
     }
 
     @Override
@@ -109,7 +109,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (unpaidInvoices == 0) {
             return null;
         }
-        List<InvoiceEntity> invoices = invoiceRepository.findAllByCustomerIdAndStatus(customerId, "PENDING");
+        List<InvoiceEntity> invoices = invoiceRepository.findAllByCustomerIdAndStatus(customerId, "OVERDUE");
         List<InvoiceDetailDTO> result = new ArrayList<>();
         for (InvoiceEntity invoice : invoices) {
             UtilityMeterEntity utilityMeter = utilityMeterService.findByContractIdAndMonthAndYear(
@@ -121,7 +121,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public BigDecimal getTotalAmountPayable(Long customerId) {
-        return invoiceRepository.findAllByCustomerIdAndStatus(customerId, "PENDING")
+        return invoiceRepository.findAllByCustomerIdAndStatus(customerId, "OVERDUE")
                 .stream()
                 .map(InvoiceEntity::getTotalAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -129,12 +129,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public Long getTotalPaidInvoice(Long customerId) {
-        return invoiceRepository.countByCustomerIdAndStatus(customerId, "PAID");
+        return invoiceRepository.countByCustomerIdAndStatus(customerId, "PENDING");
     }
 
     @Override
     public Page<InvoiceDetailDTO> getInvoices(int page, int size, Integer month, Integer year, Long customerId) {
-        Page<InvoiceEntity> invoicePage = invoiceRepository.search(month, year, customerId, "PAID", PageRequest.of(page, size));
+        Page<InvoiceEntity> invoicePage = invoiceRepository.search(month, year, customerId, "PENDING", PageRequest.of(page, size));
         List<InvoiceDetailDTO> dtoList = new ArrayList<>();
         for (InvoiceEntity invoice : invoicePage) {
             UtilityMeterEntity utilityMeter = utilityMeterService.findByContractIdAndMonthAndYear(
@@ -207,7 +207,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public void invoiceConfirm(Long id) {
-        int updated = invoiceRepository.confirmInvoice(id);
+        int updated = 0;
         if (updated == 0) {
             throw new BusinessException("Kh\u00f4ng th\u1ec3 x\u00e1c nh\u1eadn h\u00f3a \u0111\u01a1n.");
         }

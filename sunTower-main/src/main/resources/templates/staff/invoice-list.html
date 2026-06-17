@@ -1987,6 +1987,16 @@
           `);
                     });
 
+                    let refreshCount = 0;
+                    const transientRefresh = setInterval(function () {
+                        const refreshedRows = tbody.children("tr").clone(true, true);
+                        tbody.empty().append(refreshedRows);
+                        refreshCount += 1;
+                        if (refreshCount >= 6) {
+                            clearInterval(transientRefresh);
+                        }
+                    }, 120);
+
                     renderPagination(data.totalPages, page);
                 },
                 error: function () {

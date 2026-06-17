@@ -151,7 +151,7 @@ public class PaymentV1API {
     }
 
     private boolean isPayableStatus(String status) {
-        return "PENDING".equalsIgnoreCase(status) || "OVERDUE".equalsIgnoreCase(status);
+        return "OVERDUE".equalsIgnoreCase(status);
     }
 
     private String buildQrUrl(String amountValue, String transferContent) {
